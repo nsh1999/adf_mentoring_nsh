@@ -1,0 +1,30 @@
+{
+	"name": "BinaryReader_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureStorageLinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TheFileName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "OLD"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().TheFileName",
+					"type": "Expression"
+				},
+				"container": "movies"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

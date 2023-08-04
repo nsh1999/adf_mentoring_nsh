@@ -1,0 +1,53 @@
+{
+	"name": "RawRatings_part",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageTarget",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"theFileName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "OLD"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().theFileName",
+					"type": "Expression"
+				},
+				"folderPath": "movies",
+				"container": "raw"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "userId",
+				"type": "String"
+			},
+			{
+				"name": "movieId",
+				"type": "String"
+			},
+			{
+				"name": "rating",
+				"type": "String"
+			},
+			{
+				"name": "timestamp",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

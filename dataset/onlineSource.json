@@ -1,0 +1,21 @@
+{
+	"name": "onlineSource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Module7online",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Module07"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "online"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

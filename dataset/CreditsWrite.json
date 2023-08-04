@@ -1,0 +1,35 @@
+{
+	"name": "CreditsWrite",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageTarget",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"theSourceFileName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "OLD"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat(replace(dataset().theSourceFileName,'.csv','_'), formatDateTime(convertTimeZone(utcnow(),'UTC','W. Europe Standard Time'),'yyyyMMddHHmmss'), '.csv')",
+					"type": "Expression"
+				},
+				"folderPath": "movies",
+				"container": "raw"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

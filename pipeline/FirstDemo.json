@@ -1,0 +1,117 @@
+{
+	"name": "FirstDemo",
+	"properties": {
+		"description": "Copy new and changed files only by using LastModifiedDate",
+		"activities": [
+			{
+				"name": "CopyNewFiles",
+				"description": "Copy new and changed files only by using LastModifiedDate",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"modifiedDatetimeStart": {
+								"value": "@{pipeline().parameters.LastModified_From}",
+								"type": "Expression"
+							},
+							"modifiedDatetimeEnd": {
+								"value": "@{pipeline().parameters.LastModified_To}",
+								"type": "Expression"
+							},
+							"wildcardFileName": {
+								"value": "*",
+								"type": "Expression"
+							}
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "BinaryDataSourceStore",
+						"type": "DatasetReference",
+						"parameters": {
+							"Container": {
+								"value": "@pipeline().parameters.FolderPath_Source",
+								"type": "Expression"
+							},
+							"Directory": {
+								"value": "@pipeline().parameters.Directory_Source",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "BinaryDataDestinationStore",
+						"type": "DatasetReference",
+						"parameters": {
+							"Container": {
+								"value": "@pipeline().parameters.FolderPath_Destination",
+								"type": "Expression"
+							},
+							"Directory": {
+								"value": "@pipeline().parameters.Directory_Destination",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"FolderPath_Source": {
+				"type": "String",
+				"defaultValue": "movies"
+			},
+			"Directory_Source": {
+				"type": "String",
+				"defaultValue": "."
+			},
+			"FolderPath_Destination": {
+				"type": "String",
+				"defaultValue": "raw"
+			},
+			"Directory_Destination": {
+				"type": "String",
+				"defaultValue": "movies"
+			},
+			"LastModified_From": {
+				"type": "String",
+				"defaultValue": "2019-02-01T00:00:00Z"
+			},
+			"LastModified_To": {
+				"type": "String",
+				"defaultValue": "2023-05-17T10:27:00Z"
+			}
+		},
+		"folder": {
+			"name": "Module07"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-17T10:02:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

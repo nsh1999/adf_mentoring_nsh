@@ -1,0 +1,46 @@
+{
+	"name": "Module_8_DataMart_FactOnlinePurchase",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Module_8_ DataMart",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Module08"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "DateKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OnlineServiceKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "MovieKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Price",
+				"type": "decimal",
+				"precision": 4,
+				"scale": 1
+			},
+			{
+				"name": "TransactionId",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "FactOnlinePurchase"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

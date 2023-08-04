@@ -1,0 +1,91 @@
+{
+	"name": "DeltaCopyPipeline_wvc",
+	"properties": {
+		"description": "Module 7",
+		"activities": [
+			{
+				"name": "Copy_wvc",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "movies//"
+					},
+					{
+						"name": "Destination",
+						"value": "raw/movies/"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"modifiedDatetimeStart": {
+								"value": "@pipeline().parameters.windowStart",
+								"type": "Expression"
+							},
+							"modifiedDatetimeEnd": {
+								"value": "@pipeline().parameters.windowEnd",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*"
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": false,
+					"skipErrorFile": {
+						"fileMissing": true
+					},
+					"validateDataConsistency": false
+				},
+				"inputs": [
+					{
+						"referenceName": "onlineSource",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_wvc",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"parameters": {
+			"windowStart": {
+				"type": "String",
+				"defaultValue": "2023-01-01"
+			},
+			"windowEnd": {
+				"type": "String",
+				"defaultValue": "2023-05-17"
+			}
+		},
+		"folder": {
+			"name": "Module07"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-17T13:41:40Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

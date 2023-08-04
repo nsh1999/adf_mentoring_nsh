@@ -1,0 +1,71 @@
+{
+	"name": "Module5_Master",
+	"properties": {
+		"activities": [
+			{
+				"name": "Module5_Archive",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Module5_3NF_LOAD",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Module5_Archive",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Module5_CSV_Copy",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Module5_CSV_Copy",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Module5_3NF_LOAD",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Module5_CSV_Copy",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Module5_3NF_LOAD",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"variables": {
+			"BATCH_TIMESTAMP": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Module05"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-03T11:26:30Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

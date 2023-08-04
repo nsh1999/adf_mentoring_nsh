@@ -1,0 +1,53 @@
+{
+	"name": "onlineJSON",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DUMMY",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Module07"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "*",
+				"container": "online"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"serviceName": {
+					"type": "string"
+				},
+				"serviceCode": {
+					"type": "string"
+				},
+				"movieId": {
+					"type": "integer"
+				},
+				"userId": {
+					"type": "integer"
+				},
+				"price": {
+					"type": "string"
+				},
+				"transaction": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "string"
+						},
+						"datetime": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

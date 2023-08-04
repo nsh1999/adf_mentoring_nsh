@@ -1,0 +1,37 @@
+{
+	"name": "BinaryWriter",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageTarget",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TheFIleName": {
+				"type": "string"
+			},
+			"ThePath": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "OLD"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().TheFIleName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().ThePath",
+					"type": "Expression"
+				},
+				"container": "raw"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,33 @@
+{
+	"name": "CinemaTickets",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "CinemaTickets",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-04-27T09:33:00",
+				"endTime": "2023-04-29T07:31:00",
+				"timeZone": "Romance Standard Time",
+				"schedule": {
+					"minutes": [
+						50
+					],
+					"hours": [
+						9
+					]
+				}
+			}
+		}
+	}
+}

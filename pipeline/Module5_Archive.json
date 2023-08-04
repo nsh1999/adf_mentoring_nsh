@@ -1,0 +1,157 @@
+{
+	"name": "Module5_Archive",
+	"properties": {
+		"activities": [
+			{
+				"name": "FIND CSV FILES TO ARCHIVE",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BinaryReader",
+						"type": "DatasetReference",
+						"parameters": {
+							"TheFileName": "*.csv"
+						}
+					},
+					"fieldList": [
+						"childItems",
+						"itemName"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ARCHIVE CSV",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "FIND CSV FILES TO ARCHIVE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('FIND CSV FILES TO ARCHIVE').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"batchCount": 4,
+					"activities": [
+						{
+							"name": "IT IS A FILE FOR ARCHIVE",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(item().type, 'File')",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "ARCHIVE THE CSV",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "BinarySource",
+												"storeSettings": {
+													"type": "AzureBlobStorageReadSettings",
+													"recursive": false,
+													"deleteFilesAfterCompletion": true
+												},
+												"formatSettings": {
+													"type": "BinaryReadSettings"
+												}
+											},
+											"sink": {
+												"type": "BinarySink",
+												"storeSettings": {
+													"type": "AzureBlobStorageWriteSettings"
+												}
+											},
+											"enableStaging": false,
+											"logSettings": {
+												"enableCopyActivityLog": true,
+												"copyActivityLogSettings": {
+													"logLevel": "Info",
+													"enableReliableLogging": false
+												},
+												"logLocationSettings": {
+													"linkedServiceName": {
+														"referenceName": "Logging",
+														"type": "LinkedServiceReference"
+													}
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "BinaryReader",
+												"type": "DatasetReference",
+												"parameters": {
+													"TheFileName": {
+														"value": "@item().name",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "BinaryWriter",
+												"type": "DatasetReference",
+												"parameters": {
+													"TheFIleName": "@item().name",
+													"ThePath": "movies/done"
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"BATCH_TIMESTAMP": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Module05"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-17T10:02:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

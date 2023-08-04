@@ -1,0 +1,25 @@
+{
+	"name": "TNF",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "build2fail",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 1,
+				"startTime": "2023-07-17T16:08:00",
+				"endTime": "2023-07-17T17:15:00",
+				"timeZone": "Romance Standard Time"
+			}
+		}
+	}
+}

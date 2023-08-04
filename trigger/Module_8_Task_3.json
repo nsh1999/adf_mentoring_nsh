@@ -1,0 +1,25 @@
+{
+	"name": "Module_8_Task_3",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Module08_DIM",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 1,
+				"startTime": "2023-06-21T09:35:00Z",
+				"endTime": "2023-07-03T13:50:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

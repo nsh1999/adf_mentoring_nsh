@@ -1,0 +1,23 @@
+{
+	"name": "Module7onlineSink",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"sasUri": "https://azurementoringdatalaknsh.blob.core.windows.net/online/",
+			"sasToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "Data_Factoy",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"secretname": "OnlineMoviesBlob",
+						"secretversion": "Latest version"
+					}
+				},
+				"secretName": "OnlineMoviesBlob"
+			}
+		}
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"name": "DestinationDataset_wvc",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageTarget",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "OLD"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "movies",
+				"container": "raw"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

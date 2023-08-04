@@ -1,0 +1,23 @@
+{
+	"name": "build2fail",
+	"properties": {
+		"activities": [
+			{
+				"name": "Fail1",
+				"type": "Fail",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"message": "This was designed to FAIL",
+					"errorCode": "20230717"
+				}
+			}
+		],
+		"folder": {
+			"name": "Module10"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-17T13:12:28Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

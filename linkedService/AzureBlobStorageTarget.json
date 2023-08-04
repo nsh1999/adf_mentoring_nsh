@@ -1,0 +1,12 @@
+{
+	"name": "AzureBlobStorageTarget",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"serviceEndpoint": "https://azurementoringdatalaknsh.blob.core.windows.net/",
+			"accountKind": "StorageV2"
+		}
+	}
+}

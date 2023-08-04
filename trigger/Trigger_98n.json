@@ -1,0 +1,25 @@
+{
+	"name": "Trigger_98n",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "MetadataDrivenCopyTask_98n_TopLevel",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 1,
+				"startTime": "2023-06-27T14:25:00",
+				"endTime": "2023-07-03T13:55:00",
+				"timeZone": "Romance Standard Time"
+			}
+		}
+	}
+}

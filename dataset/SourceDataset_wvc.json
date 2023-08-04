@@ -1,0 +1,21 @@
+{
+	"name": "SourceDataset_wvc",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageSource",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Module07"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "movies"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

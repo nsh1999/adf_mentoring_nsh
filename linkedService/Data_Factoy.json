@@ -1,0 +1,22 @@
+{
+	"name": "Data_Factoy",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "This does is not that descriptive",
+		"parameters": {
+			"secretname": {
+				"type": "string",
+				"defaultValue": "azurementoringstoragensh"
+			},
+			"secretversion": {
+				"type": "string",
+				"defaultValue": "1e31786390274e148faf3a265cc40a85"
+			}
+		},
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://mentoring-key-vault-nsh.vault.azure.net/"
+		}
+	}
+}

@@ -1,0 +1,21 @@
+{
+	"name": "onlineSink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Module7onlineSink",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Module07"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "raw"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,40 @@
+{
+	"name": "BinaryMetadata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DUMMY",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"cw_fileName": {
+				"type": "string"
+			},
+			"cw_folderPath": {
+				"type": "string"
+			},
+			"cw_container": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().cw_fileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().cw_folderPath",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().cw_container",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

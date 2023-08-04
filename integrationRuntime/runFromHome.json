@@ -1,0 +1,7 @@
+{
+	"name": "runFromHome",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "run From Home"
+	}
+}

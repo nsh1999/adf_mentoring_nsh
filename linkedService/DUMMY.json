@@ -1,0 +1,23 @@
+{
+	"name": "DUMMY",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"sasUri": "https://azurementoringdatalaknsh.blob.core.windows.net/",
+			"sasToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "Data_Factoy",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"secretname": "azurementoringstoragensh",
+						"secretversion": "1e31786390274e148faf3a265cc40a85"
+					}
+				},
+				"secretName": "DUMMY"
+			}
+		}
+	}
+}

@@ -1,0 +1,33 @@
+{
+	"name": "generateTickets",
+	"properties": {
+		"activities": [
+			{
+				"name": "generateTickets",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[generateTickets]"
+				},
+				"linkedServiceName": {
+					"referenceName": "on_prem_sql_server",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Module06"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-17T10:02:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

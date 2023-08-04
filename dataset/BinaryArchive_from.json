@@ -1,0 +1,21 @@
+{
+	"name": "BinaryArchive_from",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DUMMY",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Module07"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "online"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

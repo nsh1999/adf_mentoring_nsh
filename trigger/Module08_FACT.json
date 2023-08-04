@@ -1,0 +1,25 @@
+{
+	"name": "Module08_FACT",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Module08_FACT",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 5,
+				"startTime": "2023-06-22T09:45:00Z",
+				"endTime": "2023-06-23T09:50:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

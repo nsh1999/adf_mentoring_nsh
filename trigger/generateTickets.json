@@ -1,0 +1,33 @@
+{
+	"name": "generateTickets",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "generateTickets",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-04-27T09:30:00",
+				"endTime": "2023-04-29T07:26:00",
+				"timeZone": "Romance Standard Time",
+				"schedule": {
+					"minutes": [
+						45
+					],
+					"hours": [
+						9
+					]
+				}
+			}
+		}
+	}
+}

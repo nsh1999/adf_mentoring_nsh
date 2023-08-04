@@ -1,0 +1,23 @@
+{
+	"name": "Module7online",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"sasUri": "https://azurementoringstoragensh.blob.core.windows.net/online/",
+			"sasToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "Data_Factoy",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"secretname": "azurementoringstoragensh",
+						"secretversion": "1e31786390274e148faf3a265cc40a85"
+					}
+				},
+				"secretName": "onlineToken"
+			}
+		}
+	}
+}

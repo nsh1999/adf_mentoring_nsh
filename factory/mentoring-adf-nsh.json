@@ -1,0 +1,9 @@
+{
+	"name": "mentoring-adf-nsh",
+	"location": "francecentral",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "04517c03-6cfd-406e-a357-25cf0622d596",
+		"tenantId": "b41b72d0-4e9f-4c26-8a69-f949f367c91d"
+	}
+}

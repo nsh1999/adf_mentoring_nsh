@@ -1,0 +1,289 @@
+{
+	"name": "Module5_CSV_Copy",
+	"properties": {
+		"activities": [
+			{
+				"name": "FIND CSV FILES TO PROCESS",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "BATCH_TIMESTAMP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BinaryReader_source",
+						"type": "DatasetReference",
+						"parameters": {
+							"TheFileName": "*.csv"
+						}
+					},
+					"fieldList": [
+						"childItems",
+						"itemName"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "DELIVER CSV",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "FIND CSV FILES TO PROCESS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('FIND CSV FILES TO PROCESS').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"batchCount": 4,
+					"activities": [
+						{
+							"name": "IT IS A FILE TO DELIVER",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(item().type, 'File')",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "DELIVER_THE_CSV",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [
+											{
+												"name": "Source",
+												"value": "//@{item().name}"
+											},
+											{
+												"name": "Destination",
+												"value": "raw/@{'movies'}/@{concat(replace(item().name,'.csv','_'), formatDateTime(convertTimeZone(utcnow(),'UTC','W. Europe Standard Time'),'yyyyMMddHHmmss'), '.csv')}"
+											}
+										],
+										"typeProperties": {
+											"source": {
+												"type": "BinarySource",
+												"storeSettings": {
+													"type": "AzureBlobStorageReadSettings",
+													"recursive": false,
+													"deleteFilesAfterCompletion": false
+												},
+												"formatSettings": {
+													"type": "BinaryReadSettings"
+												}
+											},
+											"sink": {
+												"type": "BinarySink",
+												"storeSettings": {
+													"type": "AzureBlobStorageWriteSettings"
+												}
+											},
+											"enableStaging": false,
+											"logSettings": {
+												"enableCopyActivityLog": true,
+												"copyActivityLogSettings": {
+													"logLevel": "Info",
+													"enableReliableLogging": false
+												},
+												"logLocationSettings": {
+													"linkedServiceName": {
+														"referenceName": "Logging",
+														"type": "LinkedServiceReference"
+													}
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "BinaryReader_source",
+												"type": "DatasetReference",
+												"parameters": {
+													"TheFileName": "@item().name"
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "BinaryWriter",
+												"type": "DatasetReference",
+												"parameters": {
+													"TheFIleName": {
+														"value": "@concat(replace(item().name,'.csv','_'), variables('BATCH_TIMESTAMP'), '.csv')",
+														"type": "Expression"
+													},
+													"ThePath": "movies"
+												}
+											}
+										]
+									},
+									{
+										"name": "Web1_ERROR",
+										"type": "WebActivity",
+										"dependsOn": [
+											{
+												"activity": "DELIVER_THE_CSV",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"url": {
+												"value": "@activity('Web2').output.value",
+												"type": "Expression"
+											},
+											"method": "POST",
+											"body": {
+												"value": "{\n\"dataFactoryName\": \"@{pipeline().DataFactory}\",\n\"error_message\": \"@{activity('DELIVER_THE_CSV').output.errors[0].Message}\",\n\"message\": \"@{pipeline().GroupId}\",\n\"pipelineName\": \"@{pipeline().Pipeline}\",\n\"pipelineRun\": \"@{pipeline().RunId}\",\n\"pipelineStatus\": \"@{activity('DELIVER_THE_CSV').output.errors[0].Code}\",\n\"receiver\": \"@{pipeline().parameters.receiver}\"\n}\n\n",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "BATCH_TIMESTAMP",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Web2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "BATCH_TIMESTAMP",
+					"value": {
+						"value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','W. Europe Standard Time'),'yyyyMMddHHmmss')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "DELIVER CSV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@activity('Web2').output.value",
+						"type": "Expression"
+					},
+					"method": "POST",
+					"body": {
+						"value": "{\n\"dataFactoryName\": \"@{pipeline().DataFactory}\",\n\"error_message\": \"OK\",\n\"message\": \"COMPLETED OK\",\n\"pipelineName\": \"@{pipeline().Pipeline}\",\n\"pipelineRun\": \"@{pipeline().RunId}\",\n\"pipelineStatus\": \"OK\"\",\n\"receiver\": \"@{pipeline().parameters.receiver}\"\n}\n\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Web2",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "https://mentoring-key-vault-nsh.vault.azure.net/secrets/HTTP-POST/bf990bb5a2e946a798788b7195a01267?api-version=7.0",
+						"type": "Expression"
+					},
+					"method": "GET",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"receiver": {
+				"type": "string",
+				"defaultValue": "niels_stig_hansen@epam.com"
+			}
+		},
+		"variables": {
+			"BATCH_TIMESTAMP": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Module05"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-03T17:06:47Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

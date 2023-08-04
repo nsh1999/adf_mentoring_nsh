@@ -1,0 +1,76 @@
+{
+	"name": "Module_7_Task_5_Master",
+	"properties": {
+		"activities": [
+			{
+				"name": "COPY NEW JSON FILES",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Module_7_Task_3",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"sourceName": "OnlineBlob",
+						"Degree_of_copy_parallelism": 32,
+						"DIU": 4
+					}
+				}
+			},
+			{
+				"name": "LOAD JSON FILES",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "COPY NEW JSON FILES",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Module_7_Task_5",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"sourceName": "OnlineStaging",
+						"Degree_of_copy_parallelism": 16,
+						"DIU": 4
+					}
+				}
+			},
+			{
+				"name": "ARCHIVE LOADED JSON FILES",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "LOAD JSON FILES",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Module_7_Task_5_Archive",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Module07"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-06-16T15:24:17Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

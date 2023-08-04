@@ -1,0 +1,26 @@
+{
+	"name": "Module_8_ DataMart",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "Data_Factoy",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"secretname": "azurementoringstoragensh",
+						"secretversion": "1e31786390274e148faf3a265cc40a85"
+					}
+				},
+				"secretName": "sqlguro"
+			}
+		},
+		"connectVia": {
+			"referenceName": "Azure-IR-M8",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
