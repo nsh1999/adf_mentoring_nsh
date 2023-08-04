@@ -1,0 +1,739 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "mentoring-adf-nsh"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/BinaryDataSourceStore')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to your data source store. ",
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageSource",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string"
+					},
+					"Directory": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@dataset().Directory",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BinaryReader')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"TheFileName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().TheFileName",
+							"type": "Expression"
+						},
+						"folderPath": "movies",
+						"container": "raw"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BinaryReader_source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureStorageLinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"TheFileName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().TheFileName",
+							"type": "Expression"
+						},
+						"container": "movies"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BinaryWriter')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"TheFIleName": {
+						"type": "string"
+					},
+					"ThePath": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().TheFIleName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().ThePath",
+							"type": "Expression"
+						},
+						"container": "raw"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CinemaTickets')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CinemaTickets",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CinemaCode",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CinemaName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MovieId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TicketCount",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TicketPrice",
+						"type": "decimal",
+						"precision": 4,
+						"scale": 1
+					},
+					{
+						"name": "TransactionId",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TransactionDt",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Tickets"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CreditsWrite')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"theSourceFileName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(replace(dataset().theSourceFileName,'.csv','_'), formatDateTime(convertTimeZone(utcnow(),'UTC','W. Europe Standard Time'),'yyyyMMddHHmmss'), '.csv')",
+							"type": "Expression"
+						},
+						"folderPath": "movies",
+						"container": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CreditsWrite_copy1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "myNewTarget",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "movies",
+						"container": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "movies",
+						"container": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "FirstName",
+						"type": "String"
+					},
+					{
+						"name": "LastName",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "movies",
+						"container": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText3')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText4')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "start.csv",
+						"container": "log"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText5')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "log"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DestinationDataset_wvc')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "movies",
+						"container": "raw"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MelbourneDataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MelbourneSourceLink",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"theFileName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().theFileName",
+							"type": "Expression"
+						},
+						"folderPath": "Module 04",
+						"container": "module04"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MelbourneDelivery')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"theFileName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().theFileName",
+							"type": "Expression"
+						},
+						"folderPath": "wombats",
+						"container": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_2eo_ControlDS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "movies",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "MetadataDrivenCopyTask_2eo_20230627"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "etl",
+					"table": "tControlMetadata"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_2eo_DestinationDS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "movies",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"cw_schema": {
+						"type": "String"
+					},
+					"cw_table": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "MetadataDrivenCopyTask_2eo_20230627"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().cw_schema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().cw_table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_2eo_SourceDS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"cw_columnDelimiter": {
+						"type": "String"
+					},
+					"cw_rowDelimiter": {
+						"type": "String"
+					},
+					"cw_escapeChar": {
+						"type": "String"
+					},
+					"cw_quoteChar": {
+						"type": "String"
+					},
+					"cw_firstRowAsHeader": {
+						"type": "Bool"
+					},
+					"cw_fileName": {
+						"type": "Object"
+					},
+					"cw_folderPath": {
+						"type": "Object"
+					},
+					"cw_fileSystem": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "MetadataDrivenCopyTask_2eo_20230627"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().cw_fileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().cw_folderPath",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().cw_fileSystem",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": {
+						"value": "@dataset().cw_columnDelimiter",
+						"type": "Expression"
+					},
+					"rowDelimiter": {
+						"value": "@dataset().cw_rowDelimiter",
+						"type": "Expression"
+					},
+					"escapeChar": {
+						"value": "@dataset().cw_escapeChar",
+						"type": "Expression"
+					},
+					"firstRowAsHeader": {
+						"value": "@dataset().cw_firstRowAsHeader",
+						"type": "Expression"
+					},
+					"quoteChar": {
+						"value": "@dataset().cw_quoteChar",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_98n_ControlDS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "movies",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "MetadataDrivenCopyTask_98n_20230627"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "etl",
+					"table": "tControlMetadata"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_98n_DestinationDS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "movies",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"cw_schema": {
+						"type": "String"
+					},
+					"cw_table": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "MetadataDrivenCopyTask_98n_20230627"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().cw_schema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().cw_table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

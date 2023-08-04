@@ -1,0 +1,90 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "mentoring-adf-nsh"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorageSource_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
+		"AzureStorageLinkedService_connectionString": {
+			"value": ""
+		},
+		"CinemaTickets_connectionString": {
+			"value": ""
+		},
+		"MelbourneSourceLink_connectionString": {
+			"value": ""
+		},
+		"movies_connectionString": {
+			"value": ""
+		},
+		"on_prem_movies_connectionString": {
+			"value": ""
+		},
+		"on_prem_sql_server_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage2_properties_typeProperties_connectionString_secretName": {
+			"value": "DUMMY"
+		},
+		"AzureBlobStorageTarget_properties_typeProperties_serviceEndpoint": {
+			"value": "https://azurementoringdatalaknsh.blob.core.windows.net/"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://azurementoringdatalaknsh.dfs.core.windows.net/"
+		},
+		"AzureKeyDataFactory_properties_typeProperties_baseUrl": {
+			"value": "https://mentoring-key-vault-nsh.vault.azure.net/"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://mentoring-key-vault-nsh.vault.azure.net/"
+		},
+		"DUMMY_sasUri": {
+			"value": ""
+		},
+		"DUMMY_properties_typeProperties_sasToken_secretName": {
+			"value": "DUMMY"
+		},
+		"Data_Factoy_properties_typeProperties_baseUrl": {
+			"value": "https://mentoring-key-vault-nsh.vault.azure.net/"
+		},
+		"Logging_properties_typeProperties_serviceEndpoint": {
+			"value": "https://azurementoringdatalaknsh.blob.core.windows.net/"
+		},
+		"Module7online_sasUri": {
+			"value": ""
+		},
+		"Module7online_properties_typeProperties_sasToken_secretName": {
+			"value": "onlineToken"
+		},
+		"Module7onlineSink_sasUri": {
+			"value": ""
+		},
+		"Module7onlineSink_properties_typeProperties_sasToken_secretName": {
+			"value": "OnlineMoviesBlob"
+		},
+		"Module_8_ DataMart_properties_typeProperties_connectionString_secretName": {
+			"value": "sqlguro"
+		},
+		"myNewTarget_properties_typeProperties_serviceEndpoint": {
+			"value": "https://azurementoringdatalaknsh.blob.core.windows.net"
+		},
+		"Trigger_wvc_properties_pipeline_parameters_windowStart": {
+			"value": "@trigger().outputs.windowStartTime"
+		},
+		"Trigger_wvc_properties_pipeline_parameters_windowEnd": {
+			"value": "@trigger().outputs.windowEndTime"
+		}
+	}
+}

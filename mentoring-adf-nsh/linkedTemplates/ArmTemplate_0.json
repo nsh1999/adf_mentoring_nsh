@@ -1,0 +1,452 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "mentoring-adf-nsh"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"AzureBlobStorageSource_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageSource'"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"AzureStorageLinkedService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureStorageLinkedService'"
+		},
+		"CinemaTickets_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CinemaTickets'"
+		},
+		"MelbourneSourceLink_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'MelbourneSourceLink'"
+		},
+		"movies_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'movies'"
+		},
+		"AzureBlobStorageTarget_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://azurementoringdatalaknsh.blob.core.windows.net/"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://azurementoringdatalaknsh.dfs.core.windows.net/"
+		},
+		"AzureKeyDataFactory_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://mentoring-key-vault-nsh.vault.azure.net/"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://mentoring-key-vault-nsh.vault.azure.net/"
+		},
+		"Data_Factoy_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://mentoring-key-vault-nsh.vault.azure.net/"
+		},
+		"Logging_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://azurementoringdatalaknsh.blob.core.windows.net/"
+		},
+		"myNewTarget_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://azurementoringdatalaknsh.blob.core.windows.net"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/build2fail')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Fail1",
+						"type": "Fail",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"message": "This was designed to FAIL",
+							"errorCode": "20230717"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "Module10"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-07-17T13:12:28Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorageSource')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "The Primary data source",
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorageSource_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorageTarget')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"serviceEndpoint": "[parameters('AzureBlobStorageTarget_properties_typeProperties_serviceEndpoint')]",
+					"accountKind": "StorageV2"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureKeyDataFactory')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyDataFactory_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureKeyVault1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"AccountName": {
+						"type": "string",
+						"defaultValue": "azurementoringstoragensh"
+					}
+				},
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]",
+					"alwaysEncryptedSettings": {
+						"alwaysEncryptedAkvAuthType": "ManagedIdentity"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureStorageLinkedService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureStorageLinkedService_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CinemaTickets')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Obafgkmn42",
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('CinemaTickets_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Data_Factoy')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This does is not that descriptive",
+				"parameters": {
+					"secretname": {
+						"type": "string",
+						"defaultValue": "azurementoringstoragensh"
+					},
+					"secretversion": {
+						"type": "string",
+						"defaultValue": "1e31786390274e148faf3a265cc40a85"
+					}
+				},
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('Data_Factoy_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Logging')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"serviceEndpoint": "[parameters('Logging_properties_typeProperties_serviceEndpoint')]",
+					"accountKind": "StorageV2"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MelbourneSourceLink')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('MelbourneSourceLink_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/movies')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('movies_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/myNewTarget')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"serviceEndpoint": "[parameters('myNewTarget_properties_typeProperties_serviceEndpoint')]",
+					"accountKind": "StorageV2"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Azure-IR-M8')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "France Central",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 5,
+							"cleanup": false,
+							"customProperties": []
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureEastAustraliaIR')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"description": "Runtime Down Under",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "Australia East",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 10,
+							"cleanup": false
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/runFromHome')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"description": "run From Home",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "userId",
+						"type": "nvarchar"
+					},
+					{
+						"name": "movieId",
+						"type": "nvarchar"
+					},
+					{
+						"name": "rating",
+						"type": "nvarchar"
+					},
+					{
+						"name": "timestamp",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "stage",
+					"table": "ratings_part"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BinaryDataDestinationStore')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to your data destination store.  ",
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string"
+					},
+					"Directory": {
+						"type": "string",
+						"defaultValue": "movies"
+					}
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@dataset().Directory",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageTarget')]"
+			]
+		}
+	]
+}
