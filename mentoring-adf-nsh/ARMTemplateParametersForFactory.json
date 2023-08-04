@@ -17,6 +17,12 @@
 		"AzureSqlDatabase1_connectionString": {
 			"value": ""
 		},
+		"AzureSqlDatabase2_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabase_GitHub_connectionString": {
+			"value": ""
+		},
 		"AzureStorageLinkedService_connectionString": {
 			"value": ""
 		},

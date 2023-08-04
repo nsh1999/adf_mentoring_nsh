@@ -6,20 +6,451 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "mentoring-adf-nsh"
-		},
-		"Trigger_wvc_properties_pipeline_parameters_windowStart": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.windowStartTime"
-		},
-		"Trigger_wvc_properties_pipeline_parameters_windowEnd": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.windowEndTime"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/onlineJSON_archive')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DUMMY",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Module07"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "*",
+						"folderPath": "done",
+						"container": "online"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"serviceName": {
+							"type": "string"
+						},
+						"serviceCode": {
+							"type": "string"
+						},
+						"movieId": {
+							"type": "integer"
+						},
+						"userId": {
+							"type": "integer"
+						},
+						"price": {
+							"type": "string"
+						},
+						"transaction": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "string"
+								},
+								"datetime": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/onlineSink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Module7onlineSink",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Module07"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "raw"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/onlineSource')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Module7online",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Module07"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "online"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CinemaTickets')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy CinemaTickets",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "LookupOldWaterMarkActivity",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "LookupNewWaterMarkActivity",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "dbo.Tickets"
+							},
+							{
+								"name": "Destination",
+								"value": "stg.cinema_tickets"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": {
+									"value": "SELECT\n[CinemaCode]\n      ,[CinemaName]\n      ,[MovieId]\n      ,[TicketCount]\n      ,[TicketPrice]\n      ,[TransactionId]\n      ,[TransactionDt]\nfrom [dbo].[Tickets]\nwhere [TransactionDt] > '@{activity('LookupOldWaterMarkActivity').output.firstRow.OldWatermarkvalue}' and [TransactionDt] <= '@{activity('LookupNewWaterMarkActivity').output.firstRow.NewWatermarkvalue}'",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table stg.cinema_tickets",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CinemaCode",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "cinema_code",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "CinemaName",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "cinema_name",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "MovieId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "movie_id",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "TicketCount",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "ticket_count",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "TicketPrice",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 1,
+											"precision": 4
+										},
+										"sink": {
+											"name": "ticket_price",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 1,
+											"precision": 4
+										}
+									},
+									{
+										"source": {
+											"name": "TransactionId",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "transaction_id",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "TransactionDt",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										},
+										"sink": {
+											"name": "transaction_date",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Tickets_souce",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "cinema_tickets_sink",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "LookupOldWaterMarkActivity",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": {
+									"value": "SELECT MAX([WatermarkValue]) [OldWatermarkvalue],[TableName]\nFROM [dbo].[watermarktable]\nwhere [TableName] = 'Tickets'\nGROUP BY [TableName]",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "Tickets_souce",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "LookupNewWaterMarkActivity",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": "select  max([TransactionDt]) NewWatermarkValue\nfrom [dbo].[Tickets]",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "Tickets_souce",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "spPopulatetCinema",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Copy CinemaTickets",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[spPopulateCinema]"
+						},
+						"linkedServiceName": {
+							"referenceName": "movies",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "WriteWatermarkActivity",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "spPopulateCinemaTickets",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_write_watermark]",
+							"storedProcedureParameters": {
+								"LastModifiedtime": {
+									"value": {
+										"value": "@{activity('LookupNewWaterMarkActivity').output.firstRow.NewWatermarkvalue}",
+										"type": "Expression"
+									},
+									"type": "DateTime"
+								},
+								"TableName": {
+									"value": {
+										"value": "@{activity('LookupOldWaterMarkActivity').output.firstRow.TableName}",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "movies",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "spPopulateCinemaTickets",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "spPopulatetCinema",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[spPopulateCinemaTickets]"
+						},
+						"linkedServiceName": {
+							"referenceName": "movies",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "Module06"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-17T10:02:16Z"
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DeltaCopyPipeline_wvc')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -117,7 +548,9 @@
 				"annotations": [],
 				"lastPublishTime": "2023-05-17T13:41:40Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/onlineSource')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_98n_MiddleLevel')]",
@@ -689,7 +1122,10 @@
 				"annotations": [],
 				"lastPublishTime": "2023-06-15T09:55:33Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/onlineSource')]",
+				"[concat(variables('factoryId'), '/datasets/onlineSink')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Module_7_Task_5')]",
@@ -2249,134 +2685,8 @@
 					}
 				}
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Trigger_wvc')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "DeltaCopyPipeline_wvc",
-						"type": "PipelineReference"
-					},
-					"parameters": {
-						"windowStart": "[parameters('Trigger_wvc_properties_pipeline_parameters_windowStart')]",
-						"windowEnd": "[parameters('Trigger_wvc_properties_pipeline_parameters_windowEnd')]"
-					}
-				},
-				"type": "TumblingWindowTrigger",
-				"typeProperties": {
-					"frequency": "Minute",
-					"interval": 15,
-					"startTime": "2023-05-17T08:36:00Z",
-					"endTime": "2023-05-18T08:36:00Z",
-					"delay": "00:00:00",
-					"maxConcurrency": 50,
-					"retryPolicy": {
-						"intervalInSeconds": 30
-					},
-					"dependsOn": []
-				}
-			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/DeltaCopyPipeline_wvc')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Module08_FACT')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Module08_FACT",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Minute",
-						"interval": 5,
-						"startTime": "2023-06-22T09:45:00Z",
-						"endTime": "2023-06-23T09:50:00Z",
-						"timeZone": "UTC"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Module08_FACT')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Module_8_Task_3')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Module08_DIM",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Minute",
-						"interval": 1,
-						"startTime": "2023-06-21T09:35:00Z",
-						"endTime": "2023-07-03T13:50:00Z",
-						"timeZone": "UTC"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Module08_DIM')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Trigger_98n')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "MetadataDrivenCopyTask_98n_TopLevel",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Minute",
-						"interval": 1,
-						"startTime": "2023-06-27T14:25:00",
-						"endTime": "2023-07-03T13:55:00",
-						"timeZone": "Romance Standard Time"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/MetadataDrivenCopyTask_98n_TopLevel')]"
+				"[concat(variables('factoryId'), '/pipelines/CinemaTickets')]"
 			]
 		}
 	]

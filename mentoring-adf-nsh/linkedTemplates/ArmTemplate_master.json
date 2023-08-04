@@ -23,6 +23,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
 		},
+		"AzureSqlDatabase2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
+		},
+		"AzureSqlDatabase_GitHub_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase_GitHub'"
+		},
 		"AzureStorageLinkedService_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureStorageLinkedService'"
@@ -153,6 +161,12 @@
 					},
 					"AzureSqlDatabase1_connectionString": {
 						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
+					"AzureSqlDatabase2_connectionString": {
+						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
+					},
+					"AzureSqlDatabase_GitHub_connectionString": {
+						"value": "[parameters('AzureSqlDatabase_GitHub_connectionString')]"
 					},
 					"AzureStorageLinkedService_connectionString": {
 						"value": "[parameters('AzureStorageLinkedService_connectionString')]"
@@ -314,6 +328,26 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'mentoring-adf-nsh_ArmTemplate_4')]"
+			]
+		},
+		{
+			"name": "mentoring-adf-nsh_ArmTemplate_6",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_6.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
 					},
 					"Trigger_wvc_properties_pipeline_parameters_windowStart": {
 						"value": "[parameters('Trigger_wvc_properties_pipeline_parameters_windowStart')]"
@@ -324,7 +358,7 @@
 				}
 			},
 			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'mentoring-adf-nsh_ArmTemplate_4')]"
+				"[resourceId('Microsoft.Resources/deployments', 'mentoring-adf-nsh_ArmTemplate_5')]"
 			]
 		}
 	]

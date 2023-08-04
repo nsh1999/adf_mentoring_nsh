@@ -13,6 +13,131 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/runFromHome')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"description": "run From Home",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "userId",
+						"type": "nvarchar"
+					},
+					{
+						"name": "movieId",
+						"type": "nvarchar"
+					},
+					{
+						"name": "rating",
+						"type": "nvarchar"
+					},
+					{
+						"name": "timestamp",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "stage",
+					"table": "ratings_part"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable3')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase_GitHub",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "PersonID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "LastModifytime",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "customer_table"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BinaryDataDestinationStore')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to your data destination store.  ",
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string"
+					},
+					"Directory": {
+						"type": "string",
+						"defaultValue": "movies"
+					}
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@dataset().Directory",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/BinaryDataSourceStore')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -556,181 +681,6 @@
 				"typeProperties": {
 					"schema": "etl",
 					"table": "tControlMetadata"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_2eo_DestinationDS')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "movies",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"cw_schema": {
-						"type": "String"
-					},
-					"cw_table": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "MetadataDrivenCopyTask_2eo_20230627"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": {
-						"value": "@dataset().cw_schema",
-						"type": "Expression"
-					},
-					"table": {
-						"value": "@dataset().cw_table",
-						"type": "Expression"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_2eo_SourceDS')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"cw_columnDelimiter": {
-						"type": "String"
-					},
-					"cw_rowDelimiter": {
-						"type": "String"
-					},
-					"cw_escapeChar": {
-						"type": "String"
-					},
-					"cw_quoteChar": {
-						"type": "String"
-					},
-					"cw_firstRowAsHeader": {
-						"type": "Bool"
-					},
-					"cw_fileName": {
-						"type": "Object"
-					},
-					"cw_folderPath": {
-						"type": "Object"
-					},
-					"cw_fileSystem": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "MetadataDrivenCopyTask_2eo_20230627"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().cw_fileName",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().cw_folderPath",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@dataset().cw_fileSystem",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": {
-						"value": "@dataset().cw_columnDelimiter",
-						"type": "Expression"
-					},
-					"rowDelimiter": {
-						"value": "@dataset().cw_rowDelimiter",
-						"type": "Expression"
-					},
-					"escapeChar": {
-						"value": "@dataset().cw_escapeChar",
-						"type": "Expression"
-					},
-					"firstRowAsHeader": {
-						"value": "@dataset().cw_firstRowAsHeader",
-						"type": "Expression"
-					},
-					"quoteChar": {
-						"value": "@dataset().cw_quoteChar",
-						"type": "Expression"
-					}
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_98n_ControlDS')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "movies",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "MetadataDrivenCopyTask_98n_20230627"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "etl",
-					"table": "tControlMetadata"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_98n_DestinationDS')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "movies",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"cw_schema": {
-						"type": "String"
-					},
-					"cw_table": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "MetadataDrivenCopyTask_98n_20230627"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": {
-						"value": "@dataset().cw_schema",
-						"type": "Expression"
-					},
-					"table": {
-						"value": "@dataset().cw_table",
-						"type": "Expression"
-					}
 				}
 			},
 			"dependsOn": []

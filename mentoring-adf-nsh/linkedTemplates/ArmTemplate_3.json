@@ -53,6 +53,304 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/onlineStagingSink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "movies",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Module07"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "online_service_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "online_service_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "movie_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "user_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "price",
+						"type": "nvarchar"
+					},
+					{
+						"name": "transaction_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "transaction_date",
+						"type": "nvarchar"
+					},
+					{
+						"name": "source_filename",
+						"type": "nvarchar"
+					},
+					{
+						"name": "pipelineId",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "stg",
+					"table": "online_purchase"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/read_creadits_from_lake_comma')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileName": {
+						"type": "string",
+						"defaultValue": "credits_20230403104940.csv"
+					}
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": "movies",
+						"container": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\"",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "cast",
+						"type": "String"
+					},
+					{
+						"name": "crew",
+						"type": "String"
+					},
+					{
+						"name": "id",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/read_lake_credits')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string",
+						"defaultValue": "credits*.csv"
+					}
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": "movies",
+						"container": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\"",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "cast",
+						"type": "String"
+					},
+					{
+						"name": "crew",
+						"type": "String"
+					},
+					{
+						"name": "id",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/read_movies_metadata_from_lake_comma')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageTarget",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "OLD"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": "movies",
+						"container": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\"",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "adult",
+						"type": "String"
+					},
+					{
+						"name": "belongs_to_collection",
+						"type": "String"
+					},
+					{
+						"name": "budget",
+						"type": "String"
+					},
+					{
+						"name": "genres",
+						"type": "String"
+					},
+					{
+						"name": "homepage",
+						"type": "String"
+					},
+					{
+						"name": "id",
+						"type": "String"
+					},
+					{
+						"name": "imdb_id",
+						"type": "String"
+					},
+					{
+						"name": "original_language",
+						"type": "String"
+					},
+					{
+						"name": "original_title",
+						"type": "String"
+					},
+					{
+						"name": "overview",
+						"type": "String"
+					},
+					{
+						"name": "popularity",
+						"type": "String"
+					},
+					{
+						"name": "poster_path",
+						"type": "String"
+					},
+					{
+						"name": "production_companies",
+						"type": "String"
+					},
+					{
+						"name": "production_countries",
+						"type": "String"
+					},
+					{
+						"name": "release_date",
+						"type": "String"
+					},
+					{
+						"name": "revenue",
+						"type": "String"
+					},
+					{
+						"name": "runtime",
+						"type": "String"
+					},
+					{
+						"name": "spoken_languages",
+						"type": "String"
+					},
+					{
+						"name": "status",
+						"type": "String"
+					},
+					{
+						"name": "tagline",
+						"type": "String"
+					},
+					{
+						"name": "title",
+						"type": "String"
+					},
+					{
+						"name": "video",
+						"type": "String"
+					},
+					{
+						"name": "vote_average",
+						"type": "String"
+					},
+					{
+						"name": "vote_count",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/read_ratings_part_from_lake_comma')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1325,2401 +1623,6 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2023-04-26T12:15:42Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Master_Blob_Source')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Get Metadata1",
-						"type": "GetMetadata",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "SourceBlobDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"theSourceFileName": "*.csv"
-								}
-							},
-							"fieldList": [
-								"childItems"
-							],
-							"storeSettings": {
-								"type": "AzureBlobStorageReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							},
-							"formatSettings": {
-								"type": "DelimitedTextReadSettings"
-							}
-						}
-					},
-					{
-						"name": "ForEach1",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Get Metadata1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Get Metadata1').output.childItems",
-								"type": "Expression"
-							},
-							"activities": [
-								{
-									"name": "Copy data1",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "DelimitedTextSource",
-											"storeSettings": {
-												"type": "AzureBlobStorageReadSettings",
-												"recursive": true,
-												"enablePartitionDiscovery": false
-											},
-											"formatSettings": {
-												"type": "DelimitedTextReadSettings"
-											}
-										},
-										"sink": {
-											"type": "DelimitedTextSink",
-											"storeSettings": {
-												"type": "AzureBlobStorageWriteSettings"
-											},
-											"formatSettings": {
-												"type": "DelimitedTextWriteSettings",
-												"quoteAllText": true,
-												"fileExtension": ".txt"
-											}
-										},
-										"enableStaging": false,
-										"logSettings": {
-											"enableCopyActivityLog": true,
-											"copyActivityLogSettings": {
-												"logLevel": "Info",
-												"enableReliableLogging": false
-											},
-											"logLocationSettings": {
-												"linkedServiceName": {
-													"referenceName": "Logging",
-													"type": "LinkedServiceReference"
-												},
-												"path": "log"
-											}
-										},
-										"translator": {
-											"type": "TabularTranslator",
-											"typeConversion": true,
-											"typeConversionSettings": {
-												"allowDataTruncation": true,
-												"treatBooleanAsNumber": false
-											}
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "SourceBlobDataset",
-											"type": "DatasetReference",
-											"parameters": {
-												"theSourceFileName": {
-													"value": "@item().name",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "CreditsWrite",
-											"type": "DatasetReference",
-											"parameters": {
-												"theSourceFileName": {
-													"value": "@item().name",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"variables": {
-					"myFileName": {
-						"type": "Array"
-					},
-					"X": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "old"
-				},
-				"annotations": [],
-				"lastPublishTime": "2023-04-26T12:15:42Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_98n_BottomLevel')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "This pipeline will copy objects from one group. The objects belonging to this group will be copied parallelly.",
-				"activities": [
-					{
-						"name": "ListObjectsFromOneGroup",
-						"description": "List objects from one group and iterate each of them to downstream activities",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "START",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@pipeline().parameters.ObjectsPerGroupToCopy",
-								"type": "Expression"
-							},
-							"activities": [
-								{
-									"name": "RouteJobsBasedOnLoadingBehavior",
-									"description": "Check the loading behavior for each object if it requires full load or incremental load. If it is Default or FullLoad case, do full load. If it is DeltaLoad case, do incremental load.",
-									"type": "Switch",
-									"dependsOn": [
-										{
-											"activity": "SWITCH START",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"on": {
-											"value": "@json(item().DataLoadingBehaviorSettings).dataLoadingBehavior",
-											"type": "Expression"
-										},
-										"cases": [
-											{
-												"value": "FullLoad",
-												"activities": [
-													{
-														"name": "FullLoadOneObject",
-														"description": "Take a full snapshot on this object and copy it to the destination",
-														"type": "Copy",
-														"dependsOn": [
-															{
-																"activity": "COPY_START_02",
-																"dependencyConditions": [
-																	"Succeeded"
-																]
-															}
-														],
-														"policy": {
-															"timeout": "0.12:00:00",
-															"retry": 0,
-															"retryIntervalInSeconds": 30,
-															"secureOutput": false,
-															"secureInput": false
-														},
-														"userProperties": [
-															{
-																"name": "Source",
-																"value": "@{json(item().SourceObjectSettings).container}/@{json(item().SourceObjectSettings).folderPath}/@{json(item().SourceObjectSettings).fileName}"
-															},
-															{
-																"name": "Destination",
-																"value": "@{json(item().SinkObjectSettings).schema}.@{json(item().SinkObjectSettings).table}"
-															}
-														],
-														"typeProperties": {
-															"source": {
-																"type": "DelimitedTextSource",
-																"storeSettings": {
-																	"type": "AzureBlobStorageReadSettings",
-																	"recursive": {
-																		"value": "@json(item().CopySourceSettings).recursive",
-																		"type": "Expression"
-																	},
-																	"wildcardFileName": {
-																		"value": "@json(item().CopySourceSettings).wildcardFileName",
-																		"type": "Expression"
-																	},
-																	"enablePartitionDiscovery": {
-																		"value": "@json(item().CopySourceSettings).enablePartitionDiscovery",
-																		"type": "Expression"
-																	}
-																},
-																"formatSettings": {
-																	"type": "DelimitedTextReadSettings",
-																	"skipLineCount": {
-																		"value": "@json(item().CopySourceSettings).skipLineCount",
-																		"type": "Expression"
-																	}
-																}
-															},
-															"sink": {
-																"type": "AzureSqlSink",
-																"preCopyScript": {
-																	"value": "@json(item().CopySinkSettings).preCopyScript",
-																	"type": "Expression"
-																},
-																"tableOption": {
-																	"value": "@json(item().CopySinkSettings).tableOption",
-																	"type": "Expression"
-																}
-															},
-															"enableStaging": false,
-															"validateDataConsistency": false,
-															"translator": {
-																"value": "@json(item().CopyActivitySettings).translator",
-																"type": "Expression"
-															}
-														},
-														"inputs": [
-															{
-																"referenceName": "MetadataDrivenCopyTask_98n_SourceDS",
-																"type": "DatasetReference",
-																"parameters": {
-																	"cw_columnDelimiter": {
-																		"value": "@json(item().SourceObjectSettings).columnDelimiter",
-																		"type": "Expression"
-																	},
-																	"cw_rowDelimiter": {
-																		"value": "@json(item().SourceObjectSettings).rowDelimiter",
-																		"type": "Expression"
-																	},
-																	"cw_escapeChar": {
-																		"value": "@json(item().SourceObjectSettings).escapeChar",
-																		"type": "Expression"
-																	},
-																	"cw_quoteChar": {
-																		"value": "@json(item().SourceObjectSettings).quoteChar",
-																		"type": "Expression"
-																	},
-																	"cw_firstRowAsHeader": {
-																		"value": "@json(item().SourceObjectSettings).firstRowAsHeader",
-																		"type": "Expression"
-																	},
-																	"cw_fileName": {
-																		"value": "@json(item().SourceObjectSettings).fileName",
-																		"type": "Expression"
-																	},
-																	"cw_folderPath": {
-																		"value": "@json(item().SourceObjectSettings).folderPath",
-																		"type": "Expression"
-																	},
-																	"cw_container": {
-																		"value": "@json(item().SourceObjectSettings).container",
-																		"type": "Expression"
-																	}
-																}
-															}
-														],
-														"outputs": [
-															{
-																"referenceName": "MetadataDrivenCopyTask_98n_DestinationDS",
-																"type": "DatasetReference",
-																"parameters": {
-																	"cw_schema": {
-																		"value": "@json(item().SinkObjectSettings).schema",
-																		"type": "Expression"
-																	},
-																	"cw_table": {
-																		"value": "@json(item().SinkObjectSettings).table",
-																		"type": "Expression"
-																	}
-																}
-															}
-														]
-													},
-													{
-														"name": "COPY_START_02",
-														"type": "SqlServerStoredProcedure",
-														"dependsOn": [],
-														"policy": {
-															"timeout": "0.12:00:00",
-															"retry": 0,
-															"retryIntervalInSeconds": 30,
-															"secureOutput": false,
-															"secureInput": false
-														},
-														"userProperties": [],
-														"typeProperties": {
-															"storedProcedureName": "[[dbo].[log_common]",
-															"storedProcedureParameters": {
-																"activity_name": {
-																	"value": "COPY START 02",
-																	"type": "String"
-																},
-																"pipeline_name": {
-																	"value": {
-																		"value": "@pipeline().Pipeline",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"pipeline_Run_ID": {
-																	"value": {
-																		"value": "@pipeline().RunId",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"Top_pipeline_Run_ID": {
-																	"value": {
-																		"value": "@pipeline().parameters.Top_pipeline_Run_ID",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"filename": {
-																	"value": {
-																		"value": "@json(item().SourceObjectSettings).fileName",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																}
-															}
-														},
-														"linkedServiceName": {
-															"referenceName": "movies",
-															"type": "LinkedServiceReference"
-														}
-													},
-													{
-														"name": "COPY_END_02",
-														"type": "SqlServerStoredProcedure",
-														"dependsOn": [
-															{
-																"activity": "BILLING",
-																"dependencyConditions": [
-																	"Succeeded"
-																]
-															}
-														],
-														"policy": {
-															"timeout": "0.12:00:00",
-															"retry": 0,
-															"retryIntervalInSeconds": 30,
-															"secureOutput": false,
-															"secureInput": false
-														},
-														"userProperties": [],
-														"typeProperties": {
-															"storedProcedureName": "[[dbo].[log_common]",
-															"storedProcedureParameters": {
-																"activity_name": {
-																	"value": "COPY END 02",
-																	"type": "String"
-																},
-																"pipeline_name": {
-																	"value": {
-																		"value": "@pipeline().Pipeline",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"pipeline_Run_ID": {
-																	"value": {
-																		"value": "@pipeline().RunId",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"Top_pipeline_Run_ID": {
-																	"value": {
-																		"value": "@pipeline().parameters.Top_pipeline_Run_ID",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"filename": {
-																	"value": {
-																		"value": "@json(item().SourceObjectSettings).fileName",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																}
-															}
-														},
-														"linkedServiceName": {
-															"referenceName": "movies",
-															"type": "LinkedServiceReference"
-														}
-													},
-													{
-														"name": "BILLING",
-														"type": "SqlServerStoredProcedure",
-														"dependsOn": [
-															{
-																"activity": "FullLoadOneObject",
-																"dependencyConditions": [
-																	"Succeeded"
-																]
-															}
-														],
-														"policy": {
-															"timeout": "0.12:00:00",
-															"retry": 0,
-															"retryIntervalInSeconds": 30,
-															"secureOutput": false,
-															"secureInput": false
-														},
-														"userProperties": [],
-														"typeProperties": {
-															"storedProcedureName": "[[dbo].[log_Billing]",
-															"storedProcedureParameters": {
-																"activity": {
-																	"value": {
-																		"value": "activity('FullLoadOneObject').output.executionDetails[0].duration",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"activity_name": {
-																	"value": "COPY DATA",
-																	"type": "String"
-																},
-																"billing_duration": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.executionDetails[0].duration",
-																		"type": "Expression"
-																	},
-																	"type": "Double"
-																},
-																"meter_type": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.billingReference.billableDuration[0].meterType",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"number_of_parallel_copies": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.usedParallelCopies",
-																		"type": "Expression"
-																	},
-																	"type": "Int32"
-																},
-																"number_of_processed_files": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.filesRead",
-																		"type": "Expression"
-																	},
-																	"type": "Int32"
-																},
-																"number_of_read_rows": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.rowsRead",
-																		"type": "Expression"
-																	},
-																	"type": "Int32"
-																},
-																"number_of_used_DIU": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.usedDataIntegrationUnits",
-																		"type": "Expression"
-																	},
-																	"type": "Int32"
-																},
-																"number_of_written_rows": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.rowsCopied",
-																		"type": "Expression"
-																	},
-																	"type": "Int32"
-																},
-																"pipeline_Run_ID": {
-																	"value": {
-																		"value": "@pipeline().RunId",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"filename": {
-																	"value": {
-																		"value": "@json(item().SourceObjectSettings).fileName",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"start_time": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.executionDetails[0].start",
-																		"type": "Expression"
-																	},
-																	"type": "Datetime"
-																},
-																"end_time": {
-																	"value": {
-																		"value": "@addseconds(activity('FullLoadOneObject').output.executionDetails[0].start, activity('FullLoadOneObject').output.executionDetails[0].duration)",
-																		"type": "Expression"
-																	},
-																	"type": "Datetime"
-																},
-																"status": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.executionDetails[0].status",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"queue_duration": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.executionDetails[0].detailedDurations.queuingDuration",
-																		"type": "Expression"
-																	},
-																	"type": "Int32"
-																},
-																"transfer_duration": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.executionDetails[0].detailedDurations.transferDuration",
-																		"type": "Expression"
-																	},
-																	"type": "Int32"
-																},
-																"copy_duration": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.copyDuration",
-																		"type": "Expression"
-																	},
-																	"type": "Int32"
-																},
-																"duration": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.executionDetails[0].duration",
-																		"type": "Expression"
-																	},
-																	"type": "Int32"
-																}
-															}
-														},
-														"linkedServiceName": {
-															"referenceName": "movies",
-															"type": "LinkedServiceReference"
-														}
-													},
-													{
-														"name": "log_error_details",
-														"type": "SqlServerStoredProcedure",
-														"dependsOn": [
-															{
-																"activity": "FullLoadOneObject",
-																"dependencyConditions": [
-																	"Failed"
-																]
-															}
-														],
-														"policy": {
-															"timeout": "0.12:00:00",
-															"retry": 0,
-															"retryIntervalInSeconds": 30,
-															"secureOutput": false,
-															"secureInput": false
-														},
-														"userProperties": [],
-														"typeProperties": {
-															"storedProcedureName": "[[dbo].[log_error_details]",
-															"storedProcedureParameters": {
-																"activity_name": {
-																	"value": "ERROR HANDLING",
-																	"type": "String"
-																},
-																"error_code": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.errors[0].Code",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"error_message": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.errors[0].Message",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"failure_type": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.errors[0].EventType",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"pipeline_name": {
-																	"value": {
-																		"value": "@pipeline().Pipeline",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"pipeline_Run_ID": {
-																	"value": {
-																		"value": "@pipeline().RunId",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"Top_pipeline_Run_ID": {
-																	"value": {
-																		"value": "@pipeline().parameters.Top_pipeline_Run_ID",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"Category": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.errors[0].Category",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"Data": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.errors[0].Data",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"MsgId": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.errors[0].MsgId",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"ExceptionType": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.errors[0].ExceptionType",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"Source": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.errors[0].Source",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"StackTrace": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.errors[0].StackTrace",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																},
-																"InnerEventInfos": {
-																	"value": {
-																		"value": "@activity('FullLoadOneObject').output.errors[0].InnerEventInfos",
-																		"type": "Expression"
-																	},
-																	"type": "String"
-																}
-															}
-														},
-														"linkedServiceName": {
-															"referenceName": "movies",
-															"type": "LinkedServiceReference"
-														}
-													}
-												]
-											}
-										],
-										"defaultActivities": [
-											{
-												"name": "DefaultFullLoadOneObject",
-												"description": "Take a full snapshot on this object and copy it to the destination",
-												"type": "Copy",
-												"dependsOn": [
-													{
-														"activity": "COPY_START_01",
-														"dependencyConditions": [
-															"Succeeded"
-														]
-													}
-												],
-												"policy": {
-													"timeout": "0.12:00:00",
-													"retry": 0,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [
-													{
-														"name": "Source",
-														"value": "@{json(item().SourceObjectSettings).container}/@{json(item().SourceObjectSettings).folderPath}/@{json(item().SourceObjectSettings).fileName}"
-													},
-													{
-														"name": "Destination",
-														"value": "@{json(item().SinkObjectSettings).schema}.@{json(item().SinkObjectSettings).table}"
-													}
-												],
-												"typeProperties": {
-													"source": {
-														"type": "DelimitedTextSource",
-														"storeSettings": {
-															"type": "AzureBlobStorageReadSettings",
-															"recursive": {
-																"value": "@json(item().CopySourceSettings).recursive",
-																"type": "Expression"
-															},
-															"wildcardFileName": {
-																"value": "@json(item().CopySourceSettings).wildcardFileName",
-																"type": "Expression"
-															},
-															"enablePartitionDiscovery": {
-																"value": "@json(item().CopySourceSettings).enablePartitionDiscovery",
-																"type": "Expression"
-															}
-														},
-														"formatSettings": {
-															"type": "DelimitedTextReadSettings",
-															"skipLineCount": {
-																"value": "@json(item().CopySourceSettings).skipLineCount",
-																"type": "Expression"
-															}
-														}
-													},
-													"sink": {
-														"type": "AzureSqlSink",
-														"preCopyScript": {
-															"value": "@json(item().CopySinkSettings).preCopyScript",
-															"type": "Expression"
-														},
-														"tableOption": {
-															"value": "@json(item().CopySinkSettings).tableOption",
-															"type": "Expression"
-														}
-													},
-													"enableStaging": false,
-													"validateDataConsistency": false,
-													"translator": {
-														"value": "@json(item().CopyActivitySettings).translator",
-														"type": "Expression"
-													}
-												},
-												"inputs": [
-													{
-														"referenceName": "MetadataDrivenCopyTask_98n_SourceDS",
-														"type": "DatasetReference",
-														"parameters": {
-															"cw_columnDelimiter": {
-																"value": "@json(item().SourceObjectSettings).columnDelimiter",
-																"type": "Expression"
-															},
-															"cw_rowDelimiter": {
-																"value": "@json(item().SourceObjectSettings).rowDelimiter",
-																"type": "Expression"
-															},
-															"cw_escapeChar": {
-																"value": "@json(item().SourceObjectSettings).escapeChar",
-																"type": "Expression"
-															},
-															"cw_quoteChar": {
-																"value": "@json(item().SourceObjectSettings).quoteChar",
-																"type": "Expression"
-															},
-															"cw_firstRowAsHeader": {
-																"value": "@json(item().SourceObjectSettings).firstRowAsHeader",
-																"type": "Expression"
-															},
-															"cw_fileName": {
-																"value": "@json(item().SourceObjectSettings).fileName",
-																"type": "Expression"
-															},
-															"cw_folderPath": {
-																"value": "@json(item().SourceObjectSettings).folderPath",
-																"type": "Expression"
-															},
-															"cw_container": {
-																"value": "@json(item().SourceObjectSettings).container",
-																"type": "Expression"
-															}
-														}
-													}
-												],
-												"outputs": [
-													{
-														"referenceName": "MetadataDrivenCopyTask_98n_DestinationDS",
-														"type": "DatasetReference",
-														"parameters": {
-															"cw_schema": {
-																"value": "@json(item().SinkObjectSettings).schema",
-																"type": "Expression"
-															},
-															"cw_table": {
-																"value": "@json(item().SinkObjectSettings).table",
-																"type": "Expression"
-															}
-														}
-													}
-												]
-											},
-											{
-												"name": "COPY_START_01",
-												"type": "SqlServerStoredProcedure",
-												"dependsOn": [],
-												"policy": {
-													"timeout": "0.12:00:00",
-													"retry": 0,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"storedProcedureName": "[[dbo].[log_common]",
-													"storedProcedureParameters": {
-														"activity_name": {
-															"value": "COPY START 01",
-															"type": "String"
-														},
-														"pipeline_name": {
-															"value": {
-																"value": "@pipeline().Pipeline",
-																"type": "Expression"
-															},
-															"type": "String"
-														},
-														"pipeline_Run_ID": {
-															"value": {
-																"value": "@pipeline().RunId",
-																"type": "Expression"
-															},
-															"type": "String"
-														},
-														"Top_pipeline_Run_ID": {
-															"value": {
-																"value": "@pipeline().parameters.Top_pipeline_Run_ID",
-																"type": "Expression"
-															},
-															"type": "String"
-														},
-														"filename": {
-															"value": {
-																"value": "@json(item().SourceObjectSettings).fileName",
-																"type": "Expression"
-															},
-															"type": "String"
-														}
-													}
-												},
-												"linkedServiceName": {
-													"referenceName": "movies",
-													"type": "LinkedServiceReference"
-												}
-											},
-											{
-												"name": "COPY_END_01",
-												"type": "SqlServerStoredProcedure",
-												"dependsOn": [
-													{
-														"activity": "DefaultFullLoadOneObject",
-														"dependencyConditions": [
-															"Succeeded"
-														]
-													}
-												],
-												"policy": {
-													"timeout": "0.12:00:00",
-													"retry": 0,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"storedProcedureName": "[[dbo].[log_common]",
-													"storedProcedureParameters": {
-														"activity_name": {
-															"value": "COPY END 01",
-															"type": "String"
-														},
-														"pipeline_name": {
-															"value": {
-																"value": "@pipeline().Pipeline",
-																"type": "Expression"
-															},
-															"type": "String"
-														},
-														"pipeline_Run_ID": {
-															"value": {
-																"value": "@pipeline().RunId",
-																"type": "Expression"
-															},
-															"type": "String"
-														},
-														"Top_pipeline_Run_ID": {
-															"value": {
-																"value": "@pipeline().parameters.Top_pipeline_Run_ID",
-																"type": "Expression"
-															},
-															"type": "String"
-														},
-														"filename": {
-															"value": {
-																"value": "@json(item().SourceObjectSettings).fileName",
-																"type": "Expression"
-															},
-															"type": "String"
-														}
-													}
-												},
-												"linkedServiceName": {
-													"referenceName": "movies",
-													"type": "LinkedServiceReference"
-												}
-											}
-										]
-									}
-								},
-								{
-									"name": "SWITCH START",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[[dbo].[log_common]",
-										"storedProcedureParameters": {
-											"activity_name": {
-												"value": "SWITCH START",
-												"type": "String"
-											},
-											"pipeline_name": {
-												"value": {
-													"value": "@pipeline().Pipeline",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"pipeline_Run_ID": {
-												"value": {
-													"value": "@pipeline().RunId",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"Top_pipeline_Run_ID": {
-												"value": {
-													"value": "@pipeline().parameters.Top_pipeline_Run_ID",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"filename": {
-												"value": {
-													"value": "@json(item().SourceObjectSettings).fileName",
-													"type": "Expression"
-												},
-												"type": "String"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "movies",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "START",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[log_common]",
-							"storedProcedureParameters": {
-								"activity_name": {
-									"value": {
-										"value": "START",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"pipeline_name": {
-									"value": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"pipeline_Run_ID": {
-									"value": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"Top_pipeline_Run_ID": {
-									"value": {
-										"value": "@pipeline().parameters.Top_pipeline_Run_ID",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"filename": {
-									"value": null,
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "movies",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "END",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "ListObjectsFromOneGroup",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[log_common]",
-							"storedProcedureParameters": {
-								"activity_name": {
-									"value": "END",
-									"type": "String"
-								},
-								"pipeline_name": {
-									"value": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"pipeline_Run_ID": {
-									"value": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"Top_pipeline_Run_ID": {
-									"value": {
-										"value": "@pipeline().parameters.Top_pipeline_Run_ID",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"filename": {
-									"value": null,
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "movies",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"ObjectsPerGroupToCopy": {
-						"type": "Array"
-					},
-					"Top_pipeline_Run_ID": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"X": {
-						"type": "Array"
-					}
-				},
-				"folder": {
-					"name": "MetadataDrivenCopyTask_98n_20230627"
-				},
-				"annotations": [],
-				"lastPublishTime": "2023-07-06T09:35:04Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Module5_3NF_LOAD')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "2 spPopulateMovieStatus",
-						"description": "step 1/9",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "LOAD MOVIE METADATA",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[spPopulateMovieStatus]"
-						},
-						"linkedServiceName": {
-							"referenceName": "movies",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "1 spPopulateCast",
-						"description": "step 6/9",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "LOAD CREDITS",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[spPopulateMovieStatus]"
-						},
-						"linkedServiceName": {
-							"referenceName": "movies",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "4 spPopulatetRatings",
-						"description": "step 5/9",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "LOAD RATINGS",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "3 spPopulateMovies",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[spPopulateMovieStatus]"
-						},
-						"linkedServiceName": {
-							"referenceName": "movies",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "4 spPopulateMoviesGenreMap",
-						"description": "step 4/9",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "2 spPopulateGenre",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "3 spPopulateMovies",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[spPopulateMoviesGenreMap]"
-						},
-						"linkedServiceName": {
-							"referenceName": "movies",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "2 spPopulateGenre",
-						"description": "step 3/9",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "LOAD MOVIE METADATA",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[spPopulateGenre]"
-						},
-						"linkedServiceName": {
-							"referenceName": "movies",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "3 spPopulateMovies",
-						"description": "step 2/9",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "2 spPopulateMovieStatus",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "spPopulateMovies"
-						},
-						"linkedServiceName": {
-							"referenceName": "movies",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "2 spPopulateCompany",
-						"description": "step 8/9",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "LOAD MOVIE METADATA",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[spPopulateMovieStatus]"
-						},
-						"linkedServiceName": {
-							"referenceName": "movies",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "4 spPopulateMoviesCastMap",
-						"description": "step 7/9",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "1 spPopulateCast",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "3 spPopulateMovies",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[spPopulateMovieStatus]"
-						},
-						"linkedServiceName": {
-							"referenceName": "movies",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "4 spPopulateMoviesCompanyMap",
-						"description": "step 9/9",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "2 spPopulateCompany",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "3 spPopulateMovies",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[spPopulateMovieStatus]"
-						},
-						"linkedServiceName": {
-							"referenceName": "movies",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "LOAD CREDITS",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "LOAD MOVIE METADATA",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "Source",
-								"value": "raw/movies/"
-							},
-							{
-								"name": "Destination",
-								"value": "stg.credits"
-							}
-						],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"additionalColumns": [
-									{
-										"name": "pipelineId",
-										"value": {
-											"value": "@pipeline().RunId",
-											"type": "Expression"
-										}
-									},
-									{
-										"name": "source_filename",
-										"value": {
-											"value": "$$FILEPATH",
-											"type": "Expression"
-										}
-									}
-								],
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": false,
-									"wildcardFolderPath": "movies",
-									"wildcardFileName": "credits*.csv",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"preCopyScript": "TRUNCATE TABLE STG.CREDITS",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": true,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"logSettings": {
-								"enableCopyActivityLog": true,
-								"copyActivityLogSettings": {
-									"logLevel": "Warning",
-									"enableReliableLogging": false
-								},
-								"logLocationSettings": {
-									"linkedServiceName": {
-										"referenceName": "Logging",
-										"type": "LinkedServiceReference"
-									},
-									"path": "log"
-								}
-							},
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "cast",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "cast",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "crew",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "crew",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "id",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "id",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "pipelineId",
-											"type": "String"
-										},
-										"sink": {
-											"name": "pipelineId",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "source_filename",
-											"type": "String"
-										},
-										"sink": {
-											"name": "source_filename",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "read_lake_credits",
-								"type": "DatasetReference",
-								"parameters": {
-									"filename": "credits*.csv"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "movies",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "LOAD RATINGS",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "LOAD CREDITS",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "Source",
-								"value": "raw/movies/"
-							},
-							{
-								"name": "Destination",
-								"value": "stg.ratings"
-							}
-						],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"additionalColumns": [
-									{
-										"name": "pipelineId",
-										"value": {
-											"value": "@pipeline().RunId",
-											"type": "Expression"
-										}
-									},
-									{
-										"name": "source_filename",
-										"value": "$$FILEPATH"
-									}
-								],
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": false,
-									"wildcardFolderPath": "movies",
-									"wildcardFileName": "ratings*.csv",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"preCopyScript": "TRUNCATE TABLE STG.RATINGS",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": true,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"logSettings": {
-								"enableCopyActivityLog": true,
-								"copyActivityLogSettings": {
-									"logLevel": "Info",
-									"enableReliableLogging": false
-								},
-								"logLocationSettings": {
-									"linkedServiceName": {
-										"referenceName": "Logging",
-										"type": "LinkedServiceReference"
-									},
-									"path": "log"
-								}
-							},
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "userId",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "userId",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "movieId",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "movieId",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "rating",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "rating",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "timestamp",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "timestamp",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "pipelineId",
-											"type": "String"
-										},
-										"sink": {
-											"name": "pipelineId",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "source_filename",
-											"type": "String"
-										},
-										"sink": {
-											"name": "source_filename",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "read_ratings_part_from_lake_comma",
-								"type": "DatasetReference",
-								"parameters": {
-									"filename": "ratings*.csv"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "stg_ratings_part",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "LOAD MOVIE METADATA",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "Source",
-								"value": "raw/movies/"
-							},
-							{
-								"name": "Destination",
-								"value": "stg.movies_metadata"
-							}
-						],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"additionalColumns": [
-									{
-										"name": "pipelineId",
-										"value": {
-											"value": "@pipeline().RunId",
-											"type": "Expression"
-										}
-									},
-									{
-										"name": "source_filename",
-										"value": {
-											"value": "$$FILEPATH",
-											"type": "Expression"
-										}
-									}
-								],
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": false,
-									"wildcardFolderPath": "movies",
-									"wildcardFileName": "movies_metadata*.csv",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"preCopyScript": "TRUNCATE TABLE [stg].[movies_metadata]",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"logSettings": {
-								"enableCopyActivityLog": true,
-								"copyActivityLogSettings": {
-									"logLevel": "Warning",
-									"enableReliableLogging": false
-								},
-								"logLocationSettings": {
-									"linkedServiceName": {
-										"referenceName": "Logging",
-										"type": "LinkedServiceReference"
-									},
-									"path": "log"
-								}
-							},
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "adult",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "adult",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "belongs_to_collection",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "belongs_to_collection",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "budget",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "budget",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "genres",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "genres",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "homepage",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "homepage",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "id",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "id",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "imdb_id",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "imdb_id",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "original_language",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "original_language",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "original_title",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "original_title",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "overview",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "overview",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "popularity",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "popularity",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "poster_path",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "poster_path",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "production_companies",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "production_companies",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "production_countries",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "production_countries",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "release_date",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "release_date",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "revenue",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "revenue",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "runtime",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "runtime",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "spoken_languages",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "spoken_languages",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "status",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "status",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "tagline",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "tagline",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "title",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "title",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "video",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "video",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "vote_average",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "vote_average",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "vote_count",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "vote_count",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "pipelineId",
-											"type": "String"
-										},
-										"sink": {
-											"name": "pipelineId",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "source_filename",
-											"type": "String"
-										},
-										"sink": {
-											"name": "source_filename",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "read_movies_metadata_from_lake_comma",
-								"type": "DatasetReference",
-								"parameters": {
-									"filename": "movies_metadata*.csv"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "stg_movies_metadata",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"folder": {
-					"name": "Module05"
-				},
-				"annotations": [],
-				"lastPublishTime": "2023-05-17T10:02:16Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/read_ratings_part_from_lake_comma')]",
-				"[concat(variables('factoryId'), '/datasets/stg_ratings_part')]",
-				"[concat(variables('factoryId'), '/datasets/stg_movies_metadata')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Module5_Archive')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "FIND CSV FILES TO ARCHIVE",
-						"type": "GetMetadata",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "BinaryReader",
-								"type": "DatasetReference",
-								"parameters": {
-									"TheFileName": "*.csv"
-								}
-							},
-							"fieldList": [
-								"childItems",
-								"itemName"
-							],
-							"storeSettings": {
-								"type": "AzureBlobStorageReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							},
-							"formatSettings": {
-								"type": "BinaryReadSettings"
-							}
-						}
-					},
-					{
-						"name": "ARCHIVE CSV",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "FIND CSV FILES TO ARCHIVE",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('FIND CSV FILES TO ARCHIVE').output.childItems",
-								"type": "Expression"
-							},
-							"isSequential": false,
-							"batchCount": 4,
-							"activities": [
-								{
-									"name": "IT IS A FILE FOR ARCHIVE",
-									"type": "IfCondition",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"expression": {
-											"value": "@equals(item().type, 'File')",
-											"type": "Expression"
-										},
-										"ifTrueActivities": [
-											{
-												"name": "ARCHIVE THE CSV",
-												"type": "Copy",
-												"dependsOn": [],
-												"policy": {
-													"timeout": "0.12:00:00",
-													"retry": 0,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"source": {
-														"type": "BinarySource",
-														"storeSettings": {
-															"type": "AzureBlobStorageReadSettings",
-															"recursive": false,
-															"deleteFilesAfterCompletion": true
-														},
-														"formatSettings": {
-															"type": "BinaryReadSettings"
-														}
-													},
-													"sink": {
-														"type": "BinarySink",
-														"storeSettings": {
-															"type": "AzureBlobStorageWriteSettings"
-														}
-													},
-													"enableStaging": false,
-													"logSettings": {
-														"enableCopyActivityLog": true,
-														"copyActivityLogSettings": {
-															"logLevel": "Info",
-															"enableReliableLogging": false
-														},
-														"logLocationSettings": {
-															"linkedServiceName": {
-																"referenceName": "Logging",
-																"type": "LinkedServiceReference"
-															}
-														}
-													}
-												},
-												"inputs": [
-													{
-														"referenceName": "BinaryReader",
-														"type": "DatasetReference",
-														"parameters": {
-															"TheFileName": {
-																"value": "@item().name",
-																"type": "Expression"
-															}
-														}
-													}
-												],
-												"outputs": [
-													{
-														"referenceName": "BinaryWriter",
-														"type": "DatasetReference",
-														"parameters": {
-															"TheFIleName": "@item().name",
-															"ThePath": "movies/done"
-														}
-													}
-												]
-											}
-										]
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"variables": {
-					"BATCH_TIMESTAMP": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "Module05"
-				},
-				"annotations": [],
-				"lastPublishTime": "2023-05-17T10:02:16Z"
 			},
 			"dependsOn": []
 		}
